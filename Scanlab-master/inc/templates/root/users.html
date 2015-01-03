@@ -1,0 +1,69 @@
+{% include "header.html" %}
+{% include "navi.html" %}
+<script src="{{REL_URL}}js/root.js" type="text/javascript"></script>
+<div class="box">
+    <h1 class="center">Users</h1>
+    <table class="table small">
+        <tr class="table-row-header">
+            <th>Username</th>
+            <th>Account Limit</th>
+            <th>Favorites</th>
+            <th>Reports</th>
+            <th>Joined at</th>
+            <th>Api Key</th>
+            <th>Del User</th>
+            <th>Del Reports</th>
+            <th>Count Reports</th>
+        </tr>
+
+    {% for user in users %}
+        <tr>
+            <td>{{ user.username }}</td>
+            <td>
+                <form id="limit-form" class="scanlab-form inline" action="{{REL_URL}}root" method="POST">
+                    <fieldset>
+                    <input value="{{ user.account_limit }}" name="limit" type="text">
+                    <input value="{{ user.username }}" name="username" type="hidden">
+                    <input type="hidden" name="token" value="{{ session.token }}">
+                    <input value="update_limit" name="action" type="hidden">
+                    </fieldset>
+
+                </form>
+            </td>
+            <td>{{ user.favorites_count }}</td>
+            <td>{{ user.reports_count }}</td>
+            <td>{{ user.joined_at|date('d M y')}}</td>
+            <td>
+                {% if user.api_key == 0 %}
+                <span class="btn small enable-api" title="{{user.username}}">enable API</span>
+                {% elseif user.api_key == 1 %}
+                <span class="btn small disable-api" title="{{user.username}}">disable API</span>
+                {% endif %}
+            </td>
+            <td>
+                <span class="btn small del-user" title="{{user.username}}">Del user</span>
+            </td>
+            <td>
+                <span class="btn small del-reports" title="{{user.username}}">Del reports</span>
+            </td>
+            <td>
+                <span class="btn small count-reports" title="{{user.username}}">Recount</span>
+            </td>
+        </tr>
+    {% endfor %}
+    </table>
+</div>
+<div class="box">
+    <h1 class="center">Add new user</h1>
+    <form action="{{REL_URL}}root" method="POST" class="scanlab-form">
+        <fieldset>
+            <input type="hidden" name="token" value="{{ session.token }}">
+            <input name="username" type="text" placeholder="username">
+            <input name="password" type="text" placeholder="password">
+            <input value="add_user" name="action" type="hidden">
+            <input type="submit" value="Add" class="btn">
+        </fieldset>
+    </form>
+</div>
+
+{% include "footer.html" %}

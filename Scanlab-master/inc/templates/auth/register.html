@@ -1,0 +1,22 @@
+{% include "header.html" %}
+{% include "navi.html" %}
+
+<div class="box">
+    <form class="scanlab-form" action="{{ REL_URL }}auth/register" method="POST">
+        <fieldset>
+            <legend>Registration</legend>
+            <p>
+                Registration allows you to save interesting reports into favorites.
+                Please, contact admin if you want to use all advanced features of Scanlab.
+            </p>
+            <input type="text" name="username" placeholder="username" pattern="[a-z0-9]{4,16}" required>
+            <input type="password" name="password" placeholder="password" pattern="[a-z0-9A-Z!@#$%&]{8,32}" required>
+            <input type="text" name="captcha" placeholder="captcha" required>
+            <img src="{{REL_URL}}statique/captcha">
+            <input type="submit" class="btn btn-green" value="Register">
+        </fieldset>
+    </form>
+</div>
+
+{% include "footer.html" %}
+

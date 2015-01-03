@@ -1,0 +1,103 @@
+{% include 'header.html' %}
+{% include 'navi.html' %}
+<div class="box">
+    <div class="center">
+    <p>
+        <a class="btn" href='{{REL_URL}}user/favs'>
+            <img class="like-icon" src="{{REL_URL}}images/icons/like.png">
+            Favorites
+        </a>
+    {% if user.username == ROOT_USER %}
+        <a href="{{REL_URL}}root" class="btn btn-yellow">Root panel</a>
+    {% else %}
+        <a href="mailto:{{ADMIN_EMAIL}}" class="btn">Contact admin</a>
+    {% endif %}
+    </p>
+    {% if user.api_key != "1" %}
+    <p>API usage is <b>disabled</b></p>
+    {% else %}
+    <p>API usage is <b>enabled</b></p>
+    <hr>
+    <p>You can have <b>maximum {{user.account_limit}}</b> reports for now. <b>Currently {{user.reports_count}}</b> reports from you in database.</p>
+    <p>
+        <a class="btn" href='{{REL_URL}}search?q=user:{{user.username}}'>Search in your reports</a>
+    </p>
+    {% endif %}
+</div>
+</div>
+
+{% if user.api_key == 1 %}
+
+<div class="box">
+    <form action="{{REL_URL}}api/upload_xml" method="POST" enctype="multipart/form-data" class="scanlab-form">
+        <fieldset>
+            <legend>Upload XML report (10MB max)</legend>
+            <input type="hidden" name="MAX_FILE_SIZE" value="10024000" />
+            <input type="hidden" name="token" value="{{ session.token }}">
+            <input name="userfile" type="file" />
+            <input type="submit" class="btn" value="Upload">
+        </fieldset>
+    </form>
+</div>
+
+<div class="box">
+    <div class="center">
+        <a class="btn " id="open-targets">open targets list</a>
+    </div>
+    <div id="target-form">
+        <form action="{{REL_URL}}user/add_targets" method="POST" class="scanlab-form">
+            <fieldset>
+                <legend>This should be nmap compatible target list. Watch <b>man nmap</b> for more.</legend>
+                <textarea name="targets">{{user.targets}}</textarea>
+                <input type="hidden" name="token" value="{{ session.token }}">
+                <input type="submit" class="btn" value="Save targets">
+            </fieldset>
+        </form>
+    </div>
+</div>
+
+<div class="box">
+        <div class="center">
+            <a class="btn btn-green big" href="{{REL_URL}}clients/client.tgz">Download client</a>
+        </div>
+        <div class="script-box">
+            <div class="center"><b >Client usage</b></div>
+            <div class="hidden">
+                <h1>Installation</h1>
+                Instructions for Debian/Ubuntu/Kali Linux.
+                To install all dependencies run this command as root:
+                <pre>apt-get install -y python nmap python-pip geoip-database &amp;&amp; pip install pygeoip sleekxmpp PySocks</pre>
+
+                <h1>Usage</h1>
+
+                First edit and save configuration file "config.py".<br>
+
+                To upload xml file into database:
+                <pre>python scanlab_cli.py -f file.xml</pre>
+
+                Remote client control.
+                You can run client once and add targets for scanner from web control panel.
+                <pre>python scanlab_cli.py --remote</pre>
+
+                To scan one target and upload results to database:
+                <pre>python scanlab_cli.py -t 192.168.1.0/24</pre>
+
+                Scan list of targets (like -iL in nmap):
+                <pre>python scanlab_cli.py -l targets.txt</pre>
+
+                If you want generate random IP addresses for scanning run this.
+                Argument is number of random IPs.
+                Output is saved to file targets.txt.
+                (only works in unix systems)
+                <pre>python scanlab_cli.py --random=10000</pre>
+
+                Generate list of domains to scan. Output is saved to file domains.txt.
+                Argument is top level domain. Use it with --domain-length, which specifies length of domains.
+                Example: generate all possible .ru domains, max length is 4 symbols.
+                <pre>python scanlab_cli.py --domain=ru --domain-length=4</pre>
+            </div>
+        </div>
+</div>
+
+{% endif %}
+{% include 'footer.html' %}
